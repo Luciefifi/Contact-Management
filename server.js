@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import contactRouter from './routes/contactRoute.js';
 import  errorHandler  from './middlewares/errorHandler.js';
 import { dbConnection } from './config/dbConnection.js';
-import { connect } from 'mongoose';
+import { userRouter } from './routes/userRoute.js';
 dotenv.config()
 const app = express()
 
@@ -15,4 +15,5 @@ app.listen(PORT, ()=>{
 })
 app.use(express.json());
 app.use("/api",contactRouter);
+app.use("/api/user", userRouter)
 app.use(errorHandler)
