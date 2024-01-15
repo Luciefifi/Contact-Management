@@ -2,6 +2,7 @@ import express from 'express'
 import { registerUser,
 loginUser,
 currentUser } from '../controllers/userController.js';
+import { validateToken } from '../middlewares/validateTokenHandler.js';
 export const userRouter = express.Router();
 
 userRouter.route('/').post(registerUser)
@@ -17,11 +18,11 @@ userRouter.route('/').get((req,res)=>{
 //     })
 // })
 
-userRouter.route('/register').post(registerUser)
+userRouter.post('/register', registerUser)
 
 userRouter.route('/login').post(loginUser)
 
 
-userRouter.route('/current').get(currentUser)
+userRouter.get('/current', validateToken ,currentUser)
 
 

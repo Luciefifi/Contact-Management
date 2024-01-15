@@ -1,7 +1,8 @@
  import asyncHandle from 'express-async-handler'
  import { Contact } from '../models/contactModel.js'
  export const getAllContact = asyncHandle( async (req,res) =>{
-    const contacts =  await Contact.find()
+    const contacts = await Contact.find({user_id: req.user?.id});
+
     if(!contacts){
         res.status(404);
         throw new Error("Contact not found !")
@@ -24,7 +25,8 @@
     const contact = await Contact.create(
        { name,
         email,
-        phone
+        phone,
+        user_id: req.user.id
     }
     )
 
@@ -55,6 +57,11 @@ export const updateContact = asyncHandle (async (req,res)=>{
         res.status(404);
         throw new Error("contact not found")
     }
+    if(contact.user_id.toString() !== req.user.id)
+    {
+        res.status(403)
+        throw new Error("The user is not authorized")
+    }
     const updatedContact = Contact.findByIdAndUpdate(
         req.params.id,
         req.body,
@@ -73,7 +80,12 @@ export const deleteContact = asyncHandle( async (req,res)=>{
         res.status(404);
         throw new Error("contact not found")
     }
-    contact.remove();
+    if(contact.user_id.toString() !== req.user.id)
+    {
+        res.status(403)
+        throw new Error("The user is not authorized to delete other contact")
+    }
+    await Contact.deleteOne({_id: req.params.id});
     res.json({
         "message":`delete a contact with ${req.params.id}`
     })

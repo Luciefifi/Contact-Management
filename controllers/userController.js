@@ -46,7 +46,7 @@ export const loginUser =  asynchHandle(async (req,res)=>{
 
            
         }, process.env.ACCESS_TOKEN_SECRET,
-        {expiresIn:"1m"}
+        {expiresIn:"1d"}
         
         )
         res.status(201).json({
@@ -58,7 +58,7 @@ export const loginUser =  asynchHandle(async (req,res)=>{
 })
 
 export const currentUser =  asynchHandle(async (req,res)=>{
-    res.json({
-       "message":"current user" 
+    res.status(201).json({
+       "message":req.user
     })
 })
